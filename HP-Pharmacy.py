@@ -6,8 +6,6 @@ from PIL import Image,ImageTk
 import time
 
 set_default_color_theme("green")
-
-
 phar = CTk()
 phar.title("Pharmacy Login System")
 phar.iconbitmap("istock.ico")

@@ -76,7 +76,6 @@ except:
     pass
 
 
-
 def add():
     conn = sqlite3.connect('admins2.db')
     c = conn.cursor()
@@ -92,6 +91,61 @@ def add():
     exp_date_box.delete(0, END)
     issued_date_box.delete(0, END)
     dose_box.delete(0, END)
+
+    def tbl():
+        table = CTkFrame(loginP, height=580, width=1200, bg_color='white')
+        table.place(x=815, y=280)
+
+        try:
+            # Try fetching datas from database
+            conn = sqlite3.connect('admins2.db')
+            c = conn.cursor()
+            c.execute("SELECT oid, medicine_name, quantity, rate,total from medicine_records")
+            lst = c.fetchall()
+            conn.commit()
+            conn.close()
+        except:
+            # Empty list if list doesn't Exist
+            lst = []
+        finally:
+            # Table headings
+            lst.insert(0, ('ID', 'Medicine Name', 'Quantity', 'Rate', 'Total'))
+
+        # creating a Table
+        total_rows = len(lst)
+        total_columns = len(lst[0])
+        for i in range(total_rows):
+            if i == 0:
+                # table headings
+                fontt = ('Century Gothic', 15, 'bold')
+                jus = CENTER
+                bgc = 'white'
+            else:
+                # table datas
+                fontt = ('Century Gothic', 13)
+                jus = LEFT
+                bgc = 'yellow'
+            for j in range(total_columns):
+                # width for all columns
+                if j == 0:
+                    wid = 40
+                elif j == 1:
+                    wid = 150
+                elif j == 2:
+                    wid = 100
+                elif j == 3:
+                    wid = 70
+                elif j == 4:
+                    wid = 80
+                else:
+                    wid = 8
+                e = CTkEntry(table, width=wid, font=fontt, justify=jus)
+                e.grid(row=i, column=j)
+                e.insert(0, lst[i][j])
+                e.configure(state=DISABLED)
+
+    ####calling table function
+    tbl()
 
 
 login_head = CTkLabel(loginP, text="Patient Registration Form", text_color="black", font=("times", 34),bg_color="cyan4",width=50,  height=50)
@@ -139,7 +193,7 @@ sex_label.place(x=5, y=140)
 
 def optionmenu_callback(choice):
     sex_box = choice
-sex_combobox = CTkOptionMenu(frame2,values=["Male", 'Female','6 times a day'],command=optionmenu_callback,bg_color='transparent',height=21,width=213)
+sex_combobox = CTkOptionMenu(frame2,values=["Male", 'Female'],command=optionmenu_callback,bg_color='transparent',height=21,width=213)
 sex_combobox.place(x=145,y=145)
 sex_combobox.set("")  # set initial value
 
@@ -149,7 +203,7 @@ cont.place(x=5, y=100)
 cont_box = CTkEntry(frame2, border_width=2, placeholder_text='Enter the Contact No.', width=213, height=21)
 cont_box.place(x=145, y=105)
 
-save_btn = CTkButton(frame2,text='Save',fg_color='teal',font=('century goyhic',20),text_color='black',height=35,width=325,command=save)
+save_btn = CTkButton(frame2,text='Save',fg_color='teal',font=('century gothic bold',20),text_color='black',height=35,width=325,command=save)
 save_btn.place(x=410,y=140)
 
 frame4 = CTkFrame(master=loginP, width=760, height=250, corner_radius=11, border_width=3, border_color='cyan4',bg_color='paleturquoise')
@@ -200,66 +254,12 @@ exp_date.place(x=405, y=60)
 exp_date_box = CTkEntry(frame4, border_width=2, placeholder_text='Expiry Date', width=213, height=21)
 exp_date_box.place(x=522, y=65)
 
-add_btn = CTkButton(frame4,text='Add',fg_color='teal',font=('century goyhic',20),text_color='black',height=35,width=325,command=add)
+add_btn = CTkButton(frame4,text='Add',fg_color='teal',font=('century gothic bold',20),text_color='black',height=35,width=325,command=add)
 add_btn.place(x=410,y=175)
 
 ##########FRAME3########
 frame3 = CTkFrame(master=loginP, width=460, height=500, corner_radius=11, border_width=3, border_color='cyan4',bg_color='paleturquoise')
 frame3.place(relx=0.81, rely=0.44, anchor=tkinter.CENTER)
-
-def tbl():
-    table=CTkFrame(loginP,height=580,width=1200,bg_color='white')
-    table.place(x=815,y=280)
-
-    try:
-        #try fetching data from database
-        conn=sqlite3.connect('admins2.db')
-        c=conn.cursor()
-        c.execute("SELECT oid, medicine_name, quantity, rate,total from medicine_records")
-        lst=c.fetchall()
-        conn.commit()
-        conn.close()
-    except:
-        #empty list if list doesn't exist
-        lst=[]
-    finally:
-        #Table headings
-        lst.insert(0,('ID','Medicine Name','Quantity','Rate','Total'))
-
-    #creating a table
-    total_rows =len(lst)
-    total_columns=len(lst[0])
-    for i in range(total_rows):
-        if i==0:
-            #table heading
-            fontt=('Century Gothic',15,'bold')
-            jus=CENTER
-            bgc ='white'
-        else:
-            #table data
-            fontt=('Century Gothic',15)
-            jus=LEFT
-            bgc='yellow'
-        for j in range(total_columns):
-            #width for all columns
-            if j==0:
-                wid=40
-            elif j==1:
-                wid=150
-            elif j==2:
-                wid=100
-            elif j==3:
-                wid=70
-            elif j==4:
-                wid=80
-            else:
-                wid=8
-            e=CTkEntry(table,width=wid,font=fontt,justify=jus)
-            e.grid(row=i,column=j)
-            e.insert(0,lst[i][j])
-            e.configure(state=DISABLED)
-#calling table function
-tbl()
 
 
 pharmacy_head1 = CTkLabel(master=frame3, text="Pharmacy", text_color="royalblue", font=("century gothic bold", 13))
@@ -286,39 +286,48 @@ def delete():
     conn = sqlite3.connect('admins2.db')
     c = conn.cursor()
     c.execute("DELETE from medicine_records WHERE oid = " + empty_id_box.get())
-    print("Deleted Sucessfully")
+    messagebox.showinfo("DELETE RECORDS","Deleted Sucessfully")
     conn.commit()
     conn.close()
-
     empty_id_box.delete(0,END)
 
-def update():
+def closetab():
     conn = sqlite3.connect('admins2.db')
     c = conn.cursor()
+    c.execute("DELETE FROM medicine_records")
+    conn.commit()
+    conn.close()
+    loginP.destroy()
+
+def update():
     record_id = empty_id_box.get()
+    conn = sqlite3.connect('admins2.db')
+    c = conn.cursor()
     c.execute("""UPDATE medicine_records SET 
     medicine_name = :medi,
-    quantity= :quantity,
-    rate = :rate,
-    total = :total
+    quantity= :quant,
+    rate = :rat,
+    total = :tot
     WHERE oid = :oid""",
     {
     'medi':med_name_editor.get(),
-    'quantity': quantity_editor.get(),
-    'rate':rate_editor.get(),
-    'total': int(quantity_editor.get())*int(rate_editor.get()),
+    'quant': quantity_editor.get(),
+    'rat':rate_editor.get(),
+    'tot': int(quantity_editor.get())*int(rate_editor.get()),
     'oid':record_id
-        })
+        }
+    )
 
     conn.commit()
     conn.close()
     editor.destroy()
 
+
 def edit():
     global editor
     editor = CTk()
     editor.title('Update Data')
-    editor.geometry('300x480')
+    editor.geometry('300x400')
 
     conn = sqlite3.connect('admins2.db')
     c = conn.cursor()
@@ -331,16 +340,16 @@ def edit():
     global rate_editor
     # global total_editor
 
-    med_name_label = CTkLabel(editor, text="Medicine Name")
+    med_name_label = CTkLabel(editor, text="Medicine Name :", font=("century gothic", 15))
     med_name_label.grid(row=0, column=0, pady=(10, 0))
 
-    quantity_label = CTkLabel(editor, text="Quantity")
+    quantity_label = CTkLabel(editor, text="Quantity :", font=("century gothic", 15))
     quantity_label.grid(row=1, column=0)
 
-    rate_label = CTkLabel(editor,text="Rate")
+    rate_label = CTkLabel(editor,text="Rate :", font=("century gothi", 15))
     rate_label.grid(row=2, column=0)
 
-    total_label = CTkLabel(editor, text="Total")
+    total_label = CTkLabel(editor, text="Total :", font=("century gothic", 15))
     total_label.grid(row=3, column=0)
 
     med_name_editor = CTkEntry(editor, width=100)
@@ -362,13 +371,15 @@ def edit():
         rate_editor.insert(0, record[2])
         total_editor.insert(0, record[3])
 
-    edit_btn = CTkButton(editor, text='SAVE', command=update,height=40)
+    edit_btn = CTkButton(editor, text='UPDATE', command=update,height=40, font=("century gothic bold", 17),text_color='black')
     edit_btn.grid(row=6, column=0, columnspan=2, pady=10, padx=10, ipadx=125)
 
     conn.commit()
     conn.close()
+    empty_id_box.delete(0, END)
 
     editor.mainloop()
+
 
 ##########FRAME5  ########
 frame5 = CTkFrame(master=loginP, width=1250, height=100, corner_radius=11, border_width=3, border_color='cyan4',bg_color='paleturquoise')
@@ -422,8 +433,11 @@ def query():
     P.mainloop()
 
 
-show_all_btn = CTkButton(frame5,text='SHOW ALL',fg_color='teal',font=('century goyhic',20),text_color='black',height=50,width=400,command=query)
-show_all_btn.place(x=820,y=26)
+show_all_btn = CTkButton(frame5,text='SHOW ALL',fg_color='teal',hover_color="royalblue",font=('century goyhic',20),text_color='black',height=50,width=200,command=query)
+show_all_btn.place(x=805,y=26)
+
+closetab_btn = CTkButton(frame5,text='CLOSE',fg_color='teal',hover_color="firebrick",font=('century goyhic',20),text_color='black',height=50,width=200,command=closetab)
+closetab_btn.place(x=1030,y=26)
 
 
 switch_var = StringVar(value="light")
