@@ -321,6 +321,7 @@ def update():
     conn.commit()
     conn.close()
     editor.destroy()
+    empty_id_box.delete(0, END)
 
 
 def edit():
@@ -376,7 +377,6 @@ def edit():
 
     conn.commit()
     conn.close()
-    empty_id_box.delete(0, END)
 
     editor.mainloop()
 
